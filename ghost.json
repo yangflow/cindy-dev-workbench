@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 3,
+  "minCindyVersion": "0.1.130",
+  "id": "cindy-dev-workbench",
+  "name": "开发工作台",
+  "description": "面向任意需求来源，一个需求一个 Cindy 主会话，统一跟踪多仓分支、worktree、PR/MR 和验证进度。",
+  "whenToUse": "查看 Cindy 主会话的多仓开发进度、管理会话与仓库关联、同步选定 worktree 和 PR/MR 状态时使用。",
+  "version": "2.0.0",
+  "kind": "chip",
+  "entry": "main.js",
+  "tools": [
+    {
+      "name": "list_tools",
+      "description": "列出开发工作台的 sessions、workspace、board、sources 操作类目；传 category 返回完整参数及适用规则。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "call_tool",
+      "description": "执行 list_tools 返回的具体操作，name 为目录操作名，args 为参数对象；空参数出错时返回 schema 与规则供自纠。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "args": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "read_workbench",
+      "description": "读取主会话、多仓关联、明确仓库清单及旧版待关联记录。",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "node": {
+    "entry": "node/worker.cjs",
+    "protocol": "json-rpc-stdio",
+    "lifecycle": "on-demand",
+    "idleTimeoutSeconds": 120
+  },
+  "mainView": {
+    "title": "开发工作台",
+    "icon": "code",
+    "html": "ui.html"
+  },
+  "fs": true,
+  "pick": true,
+  "agent": {
+    "tasks": true,
+    "targets": true
+  },
+  "command": "开发工作台",
+  "readme": {
+    "en": "README.en.md",
+    "zh-CN": "README.md"
+  },
+  "releaseNotes": "通用来源版：支持统一格式的任务导入与来源去重，保留任务、会话和多仓工作区管理；移除专用来源连接及其运行依赖，并补充界面截图。",
+  "taskView": {
+    "title": "开发工作台",
+    "html": "ui.html"
+  }
+}

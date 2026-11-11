@@ -1,0 +1,12 @@
+Cindy Dev Workbench
+Copyright 2026 yangflow
+
+Independent third-party Cindy plugin. Apache-2.0.
+
+The following files are copied without modification from makecindy/cindy-official-plugins
+commit bca1aa80988e31c702c6807145eab534aedc1ca8, under Apache-2.0:
+- scripts/validate-plugin-manifest.mjs
+- .tests/contracts/plugin-manifest.bcdea7e27f97.mjs
+- .tests/contracts/NOTICE
+Source: https://github.com/makecindy/cindy-official-plugins/tree/bca1aa80988e31c702c6807145eab534aedc1ca8
+Upstream contract attribution is preserved in .tests/contracts/NOTICE.

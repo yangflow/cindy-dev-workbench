@@ -1,0 +1,17 @@
+{
+  "name": "cindy-dev-workbench",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Cindy development workbench for requirements from any source, one main session across repositories.",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "check": "node scripts/check.mjs",
+    "test": "node --test tests/*.test.cjs tests/test.cjs",
+    "build": "node scripts/build.mjs",
+    "pack": "node scripts/package.mjs",
+    "preview": "node scripts/preview.cjs"
+  }
+}

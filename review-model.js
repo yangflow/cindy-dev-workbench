@@ -1,0 +1,6 @@
+(function(root){
+ const names={unknown:'查询未知',confirm:'待确认',none:'无 PR/MR',pending:'待合并',merged:'已合并',closed:'已关闭'};
+ function review(a){if(a.error)return 'unknown';const r=a.snapshot?.reviews;if(!r)return 'confirm';if(r.status!=='ok')return 'unknown';const rows=r.items;if(!Array.isArray(rows))return 'unknown';const observed=new Set(rows.map(r=>r.url));if((a.reviews||[]).some(url=>!observed.has(url)))return 'confirm';if(!rows.length)return 'none';if(rows.some(r=>!['MERGED','OPEN','OPENED','CLOSED'].includes(r.state)))return 'unknown';if(rows.every(r=>r.state==='MERGED'))return a.snapshot?.head&&rows.every(r=>r.head===a.snapshot.head)?'merged':'confirm';if(rows.some(r=>r.state==='OPEN'||r.state==='OPENED'))return 'pending';return 'closed';}
+ function summary(m){const rows=m.associations;const states=rows.map(review);return {total:rows.length,hidden:rows.filter(a=>a.hidden).length,merged:states.filter(s=>s==='merged').length,unknown:states.some(s=>s==='unknown'||s==='confirm'),needsAttention:rows.some((a,i)=>states[i]!=='merged'||a.validation?.status!=='passed'||!a.validation.head||a.validation.head!==a.snapshot?.head)};}
+ const api={review,summary,names};root.WorkbenchReview=api;if(typeof module!=='undefined')module.exports=api;
+})(globalThis);
