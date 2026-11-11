@@ -3,7 +3,7 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 export const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 export const files=[
- 'ghost.json','main.js','model.js','review-model.js','source-model.js',
+ 'automation-main.js','automation-operations.js','node/automation-queue.cjs','scripts/workbench-automation.cjs','docs/automation.md','ghost.json','main.js','model.js','review-model.js','source-model.js',
  'icons.js','board-drag.js','ui.html','ui.css','ui.js','README.md','README.en.md',
  'CONTRIBUTING.md','docs/architecture.md','docs/sources.md','LICENSE','NOTICE',
  'node/worker.cjs','node/git.cjs','node/repo-discovery.cjs',

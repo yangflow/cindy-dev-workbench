@@ -1,6 +1,6 @@
 # 开发工作台 · Cindy Dev Workbench
 
-[English](README.en.md) · [来源接入](docs/sources.md) · [贡献指南](CONTRIBUTING.md) · [架构](docs/architecture.md)
+[English](README.en.md) · [来源接入](docs/sources.md) · [贡献指南](CONTRIBUTING.md) · [架构](docs/architecture.md) · [脚本接口](docs/automation.md)
 
 面向任意需求来源的 Cindy 开发工作台。一个需求对应一个主会话，统一管理多个仓库的分支、worktree、PR/MR 和验证记录。
 
@@ -30,6 +30,7 @@
 - 每个主会话可关联多个仓库，各自保存分支、worktree、PR/MR、验证状态及提交。
 - 跨仓合并进度、审阅筛选、折叠、隐藏恢复与差异查看。
 - 用户手动选择仓库或明确选择上级目录后检测导入，不在后台扫描磁盘。
+- 受限本机脚本接口，可在不启动模型的情况下导入任务和执行巡检。
 - 清理仅预演；移除工作台记录不会删除真实会话、仓库或 worktree。
 
 ## 导入任务
@@ -68,7 +69,7 @@ npm run pack
 
 仓库 push 不会自动安装。Actions 的 **Verify plugin** 在 push / PR 时检查并提供保留 7 天的测试包，未配置市场发布或自动部署。
 
-权限用途：`fs` 用于插件数据目录双槽持久化及回读备份，`pick` 用于明确选目录，`node` 用于只读仓库查询及编辑器打开，`agent.tasks` / `agent.targets` 用于会话核验、创建、导航与确认后的指令发送。`mainView` / `taskView` 展示工作台。
+权限用途：`fs` 用于插件数据目录双槽持久化及回读备份，`pick` 用于明确选目录，`node` 用于只读仓库查询及编辑器打开，`agent.tasks` / `agent.targets` 用于会话核验、创建、导航与确认后的指令发送。`mainView` / `taskView` 展示工作台。脚本接口使用常驻电子脑和 Node 进程随 Cindy 启停，`notify` 仅在有变化或业务失败时显示工作台轻提示。
 
 未知创建或发送结果须核对原幂等请求，不直接重试。导入前整批校验，缺席条目不自动删除。运行数据保留在 Cindy 插件数据目录，不属于源码。
 

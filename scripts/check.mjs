@@ -12,8 +12,8 @@ for(const name of files){
 }
 for(const file of [manifest.entry,manifest.node.entry,manifest.mainView.html,manifest.taskView.html])if(!files.includes(file))throw Error(`缺少声明文件 ${file}`);
 const main=fs.readFileSync(path.join(root,'main.js'),'utf8');
-for(const name of ['model.js','review-model.js','source-model.js']){
- const source=fs.readFileSync(path.join(root,name),'utf8').replace(/\nif\(typeof module!=='undefined'\)module.exports=WorkbenchSource;\n$/,'').trim();
+for(const name of ['model.js','review-model.js','source-model.js','automation-main.js','automation-operations.js']){
+ const source=fs.readFileSync(path.join(root,name),'utf8').replace(/\nif\(typeof module!=='undefined'\)module.exports=(?:WorkbenchSource|WorkbenchAutomation);\n$/,'').trim();
  if(!main.includes(source))throw Error(`${name} 与 main.js 内嵌模型不一致`);
 }
 console.log('Version, manifest entries, syntax and model copies checked');

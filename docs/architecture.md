@@ -6,6 +6,8 @@
 - `ui.html/css/js`、`board-drag.js`：工作台界面与交互。
 - `node/worker.cjs`：JSON-RPC stdio 仓库查询入口。
 - `node/git.cjs` / `repo-discovery.cjs`：Git/gh/glab 查询、编辑器入口、用户所选目录的有限检测。
+- `automation-main.js` / `automation-operations.js`：受限脚本请求与原串行写队列共用服务。
+- `node/automation-queue.cjs`：实例隔离、签名校验、权限检查及未知结果保护。
 - `scripts/`：检查、白名单构建、ZIP 打包和虚构数据预览。
 - `tests/`：虚构宿主和数据、临时仓库测试。
 - `docs/screenshots/`：当前界面在虚构数据下的真实渲染截图。

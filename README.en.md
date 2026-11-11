@@ -1,6 +1,6 @@
 # Cindy Dev Workbench
 
-[简体中文](README.md) · [Source import format](docs/sources.md) · [Architecture](docs/architecture.md)
+[简体中文](README.md) · [Source import format](docs/sources.md) · [Architecture](docs/architecture.md) · [Script interface](docs/automation.md)
 
 A Cindy development workbench for requirements from any source. Organize each requirement in one main session and track branches, worktrees, PR/MRs and validation across multiple repositories.
 
@@ -30,6 +30,7 @@ These images render the actual plugin UI with fictional tasks, repositories and 
 - Independent branch, worktree, PR/MR and validation records for each repository in a requirement.
 - Merge progress, review filters, folding, hidden-repository recovery and diff inspection.
 - Explicit repository selection and bounded discovery under a user-selected directory.
+- Restricted local script interface for imports and inspections without starting a model.
 - Preview-only cleanup. Removing workbench records does not delete actual sessions or worktrees.
 
 ## Import tasks
@@ -62,7 +63,7 @@ Output: `dist/cindy-dev-workbench-<version>.cindy`, with `ghost.json` at ZIP roo
 
 ## Installation and data
 
-Import the `.cindy` package through Cindy's local installation flow. Keep the same plugin ID and installation source for in-place updates; switching sources may isolate existing data. Source pushes do not install or deploy the plugin.
+Import the `.cindy` package through Cindy's local installation flow. Keep the same plugin ID and installation source for in-place updates; switching sources may isolate existing data. Source pushes do not install or deploy the plugin. The script interface uses a resident sandbox and Node process while Cindy is running; the plugin reports changes and business failures through its notification capability.
 
 The **Verify plugin** workflow checks source, tests and packaging, with test artifacts retained for seven days. It does not publish to the marketplace. Permission and data boundaries are detailed in the Chinese README. Unknown create/send results must be reconciled rather than replayed. Imports validate the whole batch before writing; missing entries are not deleted.
 

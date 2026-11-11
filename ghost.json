@@ -5,13 +5,13 @@
   "name": "开发工作台",
   "description": "面向任意需求来源，一个需求一个 Cindy 主会话，统一跟踪多仓分支、worktree、PR/MR 和验证进度。",
   "whenToUse": "查看 Cindy 主会话的多仓开发进度、管理会话与仓库关联、同步选定 worktree 和 PR/MR 状态时使用。",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "kind": "chip",
   "entry": "main.js",
   "tools": [
     {
       "name": "list_tools",
-      "description": "列出开发工作台的 sessions、workspace、board、sources 操作类目；传 category 返回完整参数及适用规则。",
+      "description": "列出 sessions、workspace、board、sources、automation 操作类目；传 category 返回参数与规则。",
       "parameters": {
         "type": "object",
         "properties": {
@@ -55,8 +55,7 @@
   "node": {
     "entry": "node/worker.cjs",
     "protocol": "json-rpc-stdio",
-    "lifecycle": "on-demand",
-    "idleTimeoutSeconds": 120
+    "lifecycle": "resident"
   },
   "mainView": {
     "title": "开发工作台",
@@ -74,9 +73,11 @@
     "en": "README.en.md",
     "zh-CN": "README.md"
   },
-  "releaseNotes": "通用来源版：支持统一格式的任务导入与来源去重，保留任务、会话和多仓工作区管理；移除专用来源连接及其运行依赖，并补充界面截图。",
+  "releaseNotes": "新增受限本机脚本接口，通过工作台串行队列导入任务和巡检已关联仓库；定时任务可使用纯脚本执行，不启动模型。",
   "taskView": {
     "title": "开发工作台",
     "html": "ui.html"
-  }
+  },
+  "launch": "resident",
+  "notify": true
 }

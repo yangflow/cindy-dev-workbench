@@ -11,3 +11,5 @@ config.local.json
 state-*.json
 runtime/
 *.log
+
+automation-runtime/
