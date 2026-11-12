@@ -5,7 +5,7 @@
   "name": "开发工作台",
   "description": "面向任意需求来源，一个需求一个 Cindy 主会话，统一跟踪多仓分支、worktree、PR/MR 和验证进度。",
   "whenToUse": "查看 Cindy 主会话的多仓开发进度、管理会话与仓库关联、同步选定 worktree 和 PR/MR 状态时使用。",
-  "version": "2.1.0",
+  "version": "2.1.2",
   "kind": "chip",
   "entry": "main.js",
   "tools": [
@@ -73,7 +73,7 @@
     "en": "README.en.md",
     "zh-CN": "README.md"
   },
-  "releaseNotes": "新增受限本机脚本接口，通过工作台串行队列导入任务和巡检已关联仓库；定时任务可使用纯脚本执行，不启动模型。",
+  "releaseNotes": "VS Code 工作区按需求编号或标题命名，排序并复用已关联 worktree；主会话和卡片直接显示 VS Code 入口及专用图标，卡片补充已有需求来源与 PR/MR 链接。",
   "taskView": {
     "title": "开发工作台",
     "html": "ui.html"

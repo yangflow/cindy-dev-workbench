@@ -6,7 +6,7 @@ export const files=[
  'automation-main.js','automation-operations.js','node/automation-queue.cjs','scripts/workbench-automation.cjs','docs/automation.md','ghost.json','main.js','model.js','review-model.js','source-model.js',
  'icons.js','board-drag.js','ui.html','ui.css','ui.js','README.md','README.en.md',
  'CONTRIBUTING.md','docs/architecture.md','docs/sources.md','LICENSE','NOTICE',
- 'node/worker.cjs','node/git.cjs','node/repo-discovery.cjs',
+ 'node/editor-workspace.cjs','node/worker.cjs','node/git.cjs','node/repo-discovery.cjs',
  'docs/screenshots/task-board.png','docs/screenshots/cross-repository.png','docs/screenshots/dark-mode.png'
 ];
 export function build(){
