@@ -48,6 +48,10 @@ Use **导入任务** (Import tasks) to paste a task-list JSON, or call `import_s
 
 External tools handle authorized retrieval and source authentication. Importing only adds task records; it does not create sessions or start development.
 
+## Task address
+
+Edit a task card and disable the source-default address to enter a custom HTTPS URL. Saving an empty value hides the link; re-enable the default option to restore it. Imports preserve manual choices and the original source URL. Cindy handles external navigation and may ask for confirmation.
+
 ## Development
 
 Requires Node.js 22+, Git and `zip` / `unzip`. No third-party npm runtime dependencies. PR/MR inspection uses authenticated `gh` / `glab`; unknown query results are never treated as merged.
