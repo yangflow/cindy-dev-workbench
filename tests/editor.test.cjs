@@ -16,3 +16,8 @@ test('review-style workspace uses sorted folders, empty settings and a stable na
  const editor=require('../node/editor-workspace.cjs');const dirs=['/fixture/z-tree','/fixture/a-tree'];const key='fixture-'+require('node:crypto').randomUUID();
  const first=editor.create(dirs,'REQ-42',key);try{const second=editor.create(dirs.slice().reverse(),'REQ-42',key);assert.equal(second,first);assert.equal(path.basename(first),'REQ-42.code-workspace');const data=JSON.parse(fs.readFileSync(first,'utf8'));assert.deepEqual(data,{folders:[{name:'a-tree',path:'/fixture/a-tree'},{name:'z-tree',path:'/fixture/z-tree'}],settings:{}});}finally{fs.rmSync(path.dirname(first),{recursive:true,force:true});}
 });
+test('external links use the host-supported same-page navigation and reject unsafe URLs',()=>{
+ const source=fs.readFileSync(path.join(__dirname,'../ui.js'),'utf8');const fn=source.slice(source.indexOf('function link('),source.indexOf('function renderPrevious('));const context={URL,node:(tag,text)=>({tag,text})};vm.createContext(context);vm.runInContext(fn,context);
+ const a=vm.runInContext("link('https://example.invalid/task/42','REQ-42')",context);assert.equal(a.href,'https://example.invalid/task/42');assert.equal(a.target,undefined);
+ for(const url of ['javascript:alert(1)','http://example.invalid','https://user:secret@example.invalid','https://']){context.badUrl=url;assert.equal(vm.runInContext('link(badUrl).href',context),undefined);}
+});
