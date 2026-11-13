@@ -2,6 +2,7 @@
 const http=require('node:http'),fs=require('node:fs'),path=require('node:path');
 const {harness}=require('../tests/support.cjs');
 const root=path.resolve(__dirname,'..');
+const uiRoot=process.env.WORKBENCH_PREVIEW_UI_DIR?path.resolve(process.env.WORKBENCH_PREVIEW_UI_DIR):root;
 const statuses=[{id:'todo',name:'待办',color:'gray',category:'todo'},{id:'doing',name:'进行中',color:'blue',category:'doing'},{id:'done',name:'已完成',color:'green',category:'done'},{id:'archived',name:'已归档',color:'gray',category:'done'}];
 const link=(id,repoId,state,validation='not-run')=>({id,repoId,revision:0,branch:'feat/unified-order-query',worktree:'/example/worktrees/'+repoId,reviews:['https://example.com/pull/104'],validation:{status:validation,head:validation==='passed'?'7ab42c1':null,note:validation==='passed'?'单元测试与接口契约检查通过':'等待验证'},snapshot:{head:'7ab42c1',commit:'7ab42c1 feat: unify order query',dirty:false,reviews:{status:'ok',items:[{id:104,state,url:'https://example.com/pull/104',head:'7ab42c1',target:'main'}]},checkedAt:'2026-01-15T09:30:00Z'}});
 const task=(id,ref,title,status,labels,note,extra={})=>({id,externalId:ref,source:{id:'sample-work',name:'需求清单'},ref,title,status,labels,note,revision:0,pinned:false,order:0,sessionHistory:[],url:'https://example.com/work/'+ref,updatedAt:'2026-01-15T09:30:00Z',...extra});
@@ -15,16 +16,26 @@ const state={version:2,revision:0,ui:{statuses,labels:{'需求':'blue','缺陷':
  {id:'main-a',itemId:'req-104',label:'REQ-104 统一订单查询接口',status:'doing',owned:true,revision:0,children:[],legacyIds:[],associations:[link('a','api','OPEN','passed'),link('b','console','MERGED','passed'),link('c','contracts','OPEN')]},
  {id:'main-b',itemId:'req-98',label:'REQ-98 优化多语言表单的错误提示',status:'done',owned:true,revision:0,children:[],legacyIds:[],associations:[link('d','console','MERGED','passed')]}
 ],repos:[{id:'api',name:'api-service',path:'/example/projects/api-service',provider:'github'},{id:'console',name:'console-web',path:'/example/projects/console-web',provider:'github'},{id:'contracts',name:'shared-contracts',path:'/example/projects/shared-contracts',provider:'github'}],legacyRecords:[],receipts:{},pendingCreates:{}};
-const h=harness({'state-a.json':JSON.stringify(state)},{worker:async()=>{throw Error('演示环境不调用外部工具');}});
+const fixture={calls:[],workerFailure:false,navigationFailure:false,wakeStatus:200};
+function createFixture(){const h=harness({'state-a.json':JSON.stringify(state)},{worker:async request=>{
+ if(fixture.workerFailure)throw Error('虚构测试：外部工具不可用');
+ if(request.method==='session/open-editor')return {opened:true,file:'/example/review.code-workspace'};
+ if(request.method==='association/sync')return {head:'7ab42c1',commit:'7ab42c1 fixture sync',reviews:{status:'ok',items:[]}};
+ if(request.method==='repo/trees')return [{path:'/example/worktrees/api',branch:'fixture-branch'}];
+ throw Error('演示环境不调用外部工具');
+}});
+h.context.cindy.taskView=async params=>fixture.navigationFailure?{ok:false,message:'虚构测试：宿主拒绝导航'}:{ok:true,focusRequested:true,sessionId:params.sessionId};return h;}
+let h=createFixture();
 let queue=Promise.resolve();
 const assets=new Set(['ui.js','ui.css','icons.js','review-model.js','board-drag.js']);
 const server=http.createServer(async(req,res)=>{
  try{
   const url=new URL(req.url,'http://localhost');
-  if(url.pathname==='/wake'){res.end('{}');return;}
+  if(url.pathname==='/fixture'){if(req.method==='POST'){let body='';for await(const chunk of req)body+=chunk;const patch=JSON.parse(body);if(patch.reset){h=createFixture();fixture.calls=[];}for(const key of ['workerFailure','navigationFailure','wakeStatus'])if(Object.hasOwn(patch,key))fixture[key]=patch[key];}res.setHeader('Content-Type','application/json');res.end(JSON.stringify(fixture));return;}
+  if(url.pathname==='/wake'){res.statusCode=fixture.wakeStatus;res.end('{}');return;}
   if(url.pathname==='/rpc'&&req.method==='POST'){
    let body='';for await(const chunk of req){body+=chunk;if(body.length>1000000)throw Error('请求过大');}
-   const msg=JSON.parse(body);queue=queue.then(async()=>{
+   const msg=JSON.parse(body);fixture.calls.push({id:msg.id,method:msg.method});queue=queue.then(async()=>{
     try{const result=await h.call(msg.method,msg.params,msg.id);res.setHeader('Content-Type','application/json');res.end(JSON.stringify({type:'response',id:msg.id,ok:true,result}));}
     catch(e){res.end(JSON.stringify({type:'response',id:msg.id,ok:false,error:e.message}));}
    });return;
@@ -35,12 +46,12 @@ const server=http.createServer(async(req,res)=>{
   if(url.pathname==='/'){
    const dark=url.searchParams.get('theme')==='dark';
    const theme=dark?'--panel-bg:#202622;--surface:#252b27;--text-primary:#e4ebe5;--text-secondary:#a6b0a8;--border-default:#3e4540;':'--panel-bg:#f8f9f6;--surface:#ffffff;--text-primary:#202321;--text-secondary:#727973;--border-default:#dfe3df;';
-   let html=fs.readFileSync(path.join(root,'ui.html'),'utf8').replace('<script src="icons.js">','<script src="/preview-bridge.js"></script><script src="icons.js">');
+   let html=fs.readFileSync(path.join(uiRoot,'ui.html'),'utf8').replace('<script src="icons.js">','<script src="/preview-bridge.js"></script><script src="icons.js">');
    html=html.replace('<link rel="stylesheet" href="ui.css">','<link rel="stylesheet" href="ui.css"><style>:root{'+theme+'}html{background:var(--panel-bg)}</style>');
    res.setHeader('Content-Type','text/html; charset=utf-8');res.end(html);return;
   }
   const name=url.pathname.slice(1);
-  if(assets.has(name)){res.setHeader('Content-Type',name.endsWith('.css')?'text/css':'text/javascript');res.end(fs.readFileSync(path.join(root,name)));return;}
+  if(assets.has(name)){res.setHeader('Content-Type',name.endsWith('.css')?'text/css':'text/javascript');res.end(fs.readFileSync(path.join(uiRoot,name)));return;}
   res.writeHead(404);res.end();
  }catch{res.writeHead(500);res.end('预览请求失败');}
 });

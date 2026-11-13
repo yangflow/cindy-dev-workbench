@@ -5,7 +5,7 @@
   "name": "开发工作台",
   "description": "面向任意需求来源，一个需求一个 Cindy 主会话，统一跟踪多仓分支、worktree、PR/MR 和验证进度。",
   "whenToUse": "查看 Cindy 主会话的多仓开发进度、管理会话与仓库关联、同步选定 worktree 和 PR/MR 状态时使用。",
-  "version": "2.1.6",
+  "version": "2.1.7",
   "kind": "chip",
   "entry": "main.js",
   "tools": [
@@ -73,7 +73,7 @@
     "en": "README.en.md",
     "zh-CN": "README.md"
   },
-  "releaseNotes": "支持手动设置任务地址、清空隐藏和恢复来源默认，同步保留手动选择；修复外链无法打开和详情按钮对齐问题，统一地址字段与校验提示。",
+  "releaseNotes": "操作进度、完成和失败提示保持在当前视口；唤醒失败或超时显示明确原因；等待回执时阻止重复操作，菜单选择后关闭；缺少 VS Code 路径时说明原因，菜单项增加悬停底色和阴影。",
   "taskView": {
     "title": "开发工作台",
     "html": "ui.html"

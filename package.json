@@ -1,6 +1,6 @@
 {
   "name": "cindy-dev-workbench",
-  "version": "2.1.6",
+  "version": "2.1.7",
   "private": true,
   "description": "Cindy development workbench for requirements from any source, one main session across repositories.",
   "license": "Apache-2.0",
